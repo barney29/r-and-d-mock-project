@@ -4,15 +4,6 @@ import { createAccount } from "../dtos/request.dto";
 import { NextFunction, Request, Response } from "express";
 import CustomeError from "../features/custome.error";
 
-// const isValidValue = (requests: string[]) => {
-//   for (var request of requests) {
-//     if (request.trim() === "") {
-//       return {request, };
-//     }
-
-//   }
-//   return
-// };
 export const create_user = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const {
@@ -68,7 +59,7 @@ export const get_all_user = asyncErrorHandler(
 export const get_user = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const user = await User.find({ id });
+    const user = await User.find({ _id: id });
 
     if (!user) {
       res.status(404).json({
@@ -84,56 +75,53 @@ export const get_user = asyncErrorHandler(
     }
   }
 );
-
-export const updateUser = asyncErrorHandler(
+export const update_user = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const user = await User.find({ id });
 
+    // Find the user by ID
+    const user = await User.findById(id);
+
+    // Check if the user exists
     if (!user) {
-      res.status(404).json({
-        message: `There is no user base on the specified ${id}`,
+      return res.status(404).json({
+        message: `There is no user based on the specified ID: ${id}`,
       });
     }
 
-    const updatedUser = await User.findByIdAndUpdate({
-      id,
-      ...req.body,
-    });
-    if (!updateUser) {
-      const error = new CustomeError(422, "Unable to update profile");
-      next(error);
+    // Update the user
+    const updatedUser = await User.findByIdAndUpdate(
+      { _id: id },
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+
+    // Check if update was successful
+    if (!updatedUser) {
+      return next(new CustomeError(422, "Unable to update profile"));
     }
 
-    res.status(202).json({
+    // Return response with updated user
+    return res.status(200).json({
       message: "Profile updated successfully",
       user: updatedUser,
     });
   }
 );
-
-export const deleteUser = asyncErrorHandler(
+export const delete_user = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const user = await User.find({ id });
+    const deletedUser = await User.findByIdAndDelete({ _id: id });
 
-    if (!user) {
+    if (!deletedUser) {
       res.status(404).json({
-        message: `There is no user base on the specified ${id}`,
+        message: `There is no user based on the specified ${id}`,
       });
     }
-
-    const deletedUser = await User.findByIdAndDelete({
-      id,
-      ...req.body,
-    });
-    if (!updateUser) {
-      const error = new CustomeError(422, "Unable to delete profile");
-      next(error);
+    if (deletedUser) {
+      res.status(200).json({
+        message: "Profile Deleted successfully",
+      });
     }
-
-    res.status(204).json({
-      message: "Profile Deleted successfully",
-    });
   }
 );
