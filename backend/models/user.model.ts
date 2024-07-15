@@ -1,4 +1,8 @@
-import { Schema, model } from "mongoose";
+import { NextFunction } from "express";
+import { Error, Schema, model } from "mongoose";
+import bcrypt from "bcryptjs";
+import CustomeError from "../features/custome.error";
+
 const userSchema = new Schema({
   first_name: {
     type: String,
@@ -48,6 +52,25 @@ const userSchema = new Schema({
   ],
 });
 
-const User = model("users", userSchema);
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
 
+  if (this.password === this.confirmPassword) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(this.password, salt);
+      this.password = hash;
+      this.confirmPassword = "";
+      next();
+    } catch (error: any) {
+      next(error);
+    }
+  } else {
+    const error = new CustomeError(402, "Confirmed password does not match");
+    next(error);
+  }
+});
+const User = model("users", userSchema);
 export default User;

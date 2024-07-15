@@ -7,3 +7,7 @@ export interface createAccount {
   confirmPassword: string;
   level: string;
 }
+
+export interface getuser {
+  id: string;
+}

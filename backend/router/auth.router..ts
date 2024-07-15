@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { create_user } from "../controller/user.controller";
 
-export const router = Router();
+export const authRouter = Router();
 
-router.route("/").post(create_user);
+authRouter.route("/").post(create_user);
