@@ -10,10 +10,10 @@ import authenticateToken from "../middlewares/authenticateToken";
 
 export const postRouter = Router();
 
-postRouter.route("/").get(get_all_post).post(create_post);
+postRouter.route("/").get(authenticateToken, get_all_post).post(create_post);
 
 postRouter
   .route("/:id")
   .get(authenticateToken, get_post)
-  .put(getPost, diff_content_type, update_post)
-  .delete(delete_post);
+  .put(authenticateToken, getPost, diff_content_type, update_post)
+  .delete(authenticateToken, delete_post);
