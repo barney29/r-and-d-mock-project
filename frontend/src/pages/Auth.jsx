@@ -1,7 +1,9 @@
 import { CircularProgress, TextField } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Navigate, NavLink } from "react-router-dom";
+import { setUser } from "../redux/user/userSlice";
 
 const initialFormState = {
   first_name: "",
@@ -10,11 +12,14 @@ const initialFormState = {
   phone_number: "",
   password: "",
   confirmPassword: "",
+  level: "expert",
 };
 const Auth = () => {
   const [formData, setFormData] = useState(initialFormState);
   // check login or sign up
   const [isLogin, changePage] = useState(true);
+  const dispatch = useDispatch();
+
   const [loading, setLoadinStatus] = useState(false);
   const handleChangeFormData = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,14 +29,30 @@ const Auth = () => {
     e.preventDefault();
     try {
       setLoadinStatus(true);
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/auth",
-        formData
-      );
+      let data;
+      if (!isLogin) {
+        const response = await axios.post(
+          "http://localhost:8080/api/v1/auth",
+          formData
+        );
+        //account has been createe
+        setLoadinStatus(true);
+      } else {
+        const response = await axios.get("http://localhost:8080/api/v1/auth", {
+          params: {
+            email: formData.email,
+            password: formData.password,
+          },
+        });
+        data = response.data;
+        <Navigate to="/" />;
+        dispatch(setUser(data.user));
+      }
+
       setLoadinStatus(false);
-      console.log(response);
     } catch (err) {
       console.log(err.message);
+      setLoadinStatus(false);
     }
   };
   return (
@@ -145,7 +166,7 @@ const Auth = () => {
                 type="submit"
                 className="bg-green-400 text-white pt-4 pb-4 rounded-xl font-bold hover:bg-orange-600"
               >
-                Login
+                Sign up
               </button>
               <p className="font-extralight">
                 you already have account?
