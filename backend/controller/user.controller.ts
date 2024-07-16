@@ -4,37 +4,6 @@ import { createAccount } from "../dtos/request.dto";
 import { NextFunction, Request, Response } from "express";
 import CustomeError from "../features/custome.error";
 
-export const create_user = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const {
-      first_name,
-      last_name,
-      email,
-      phone_number,
-      password,
-      confirmPassword,
-      level,
-    } = req.body as createAccount;
-
-    const user = await User.create({ ...req.body });
-
-    if (!user) {
-      const error = new CustomeError(
-        500,
-        "For some reason account was not created!"
-      );
-      next(error);
-    }
-
-    if (user) {
-      res.status(201).json({
-        status: "success",
-        message: "Account has been created successfully",
-        user,
-      });
-    }
-  }
-);
 
 export const get_all_user = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
