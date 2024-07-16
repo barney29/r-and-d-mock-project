@@ -58,18 +58,18 @@ export const get_all_user = asyncErrorHandler(
 
 export const get_user = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-    const user = await User.find({ _id: id });
-
+    const { email } = req.body;
+    const user = await User.findOne({ email: email });
+    console.log(user);
     if (!user) {
       res.status(404).json({
-        message: `There is no user base on the specified ${id}`,
+        message: `There is no user based on the specified ${email}`,
       });
     }
 
     if (user) {
       res.status(200).json({
-        message: "User with specified id",
+        message: "User with specified email address",
         user,
       });
     }
