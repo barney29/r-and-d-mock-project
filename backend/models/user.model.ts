@@ -1,9 +1,25 @@
 import { NextFunction } from "express";
-import { Error, Schema, model } from "mongoose";
+import mongoose, { Document, Error, Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 import CustomeError from "../features/custome.error";
 
-const userSchema = new Schema({
+interface Content {
+  content: mongoose.Types.ObjectId;
+  seen: boolean;
+}
+
+export interface User extends Document {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  password: string;
+  confirmPassword?: string;
+  level: string;
+  contents: Content[];
+}
+
+const userSchema = new Schema<User>({
   first_name: {
     type: String,
     required: [true, "First name is required"],
@@ -43,7 +59,7 @@ const userSchema = new Schema({
     {
       content: {
         type: Schema.Types.ObjectId,
-        ref: "Post",
+        ref: "posts",
       },
       seen: {
         type: Boolean,
@@ -73,5 +89,5 @@ userSchema.pre("save", async function (next) {
     next(error);
   }
 });
-const User = model("users", userSchema);
+const User = model<User>("users", userSchema);
 export default User;
