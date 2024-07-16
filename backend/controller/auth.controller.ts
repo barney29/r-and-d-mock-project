@@ -6,6 +6,10 @@ import generateToken from "../utils/jwt";
 import { createAccount } from "../dtos/request.dto";
 import CustomeError from "../features/custome.error";
 
+interface PassWord {
+  password: string;
+  email: string;
+}
 export const sign_up = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const {
@@ -19,7 +23,7 @@ export const sign_up = asyncErrorHandler(
     } = req.body as createAccount;
 
     const user = await User.create({ ...req.body });
-
+    console.log("touched");
     if (!user) {
       const error = new CustomeError(
         500,
@@ -39,8 +43,12 @@ export const sign_up = asyncErrorHandler(
 );
 
 export const login = asyncErrorHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body;
+  async (
+    req: Request<{}, {}, {}, PassWord>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { email, password } = req.query;
     const user = await User.findOne({ email }).populate("contents.content");
 
     if (!user) {

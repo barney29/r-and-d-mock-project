@@ -1,19 +1,19 @@
-import { log } from 'console';
-import server from './app';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
+import { log } from "console";
+import server from "./app";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+dotenv.config({ path: "./.env" });
 
-dotenv.config({path: './.env'});
-
-mongoose.connect(`${process.env.MONGODB_STR}`, {
-
-}).then(()=>{
+mongoose
+  .connect(`${process.env.MONGODB_STR}`, {})
+  .then(() => {
     console.log("Mongo db connected successfully");
-}).catch((e: Error) => {
+  })
+  .catch((e: Error) => {
     console.log(e.message);
-})
+  });
 const PORT = process.env.PORT || 3000;
 
-
-
-server.listen(PORT, () => log("Server is running at " + PORT));
+server.listen(PORT, () => {
+  log("Server is running at " + PORT);
+});

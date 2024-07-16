@@ -19,6 +19,40 @@ export interface User extends Document {
   contents: Content[];
 }
 
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *    CreateUserInput:
+ *      type: object
+ *      required:
+ *        - first_name
+ *        - last_name
+ *        - phone_number
+ *        - email
+ *        - password
+ *        - confirmPassword
+ *      properties:
+ *        first_name:
+ *          type: string
+ *          default: Joe
+ *        last_name:
+ *          type: string
+ *          default: Doe
+ *        phone_number:
+ *          type: string
+ *          default: 0966443321
+ *        email:
+ *          type: string
+ *          default: Joe.doe@gmail.com
+ *        password:
+ *          type: string
+ *          default: random1234
+ *        confirmPassword:
+ *          type: string
+ *          default: random1234
+ */
+
 const userSchema = new Schema<User>({
   first_name: {
     type: String,
