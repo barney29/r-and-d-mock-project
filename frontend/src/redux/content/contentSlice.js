@@ -32,5 +32,6 @@ export const getAllContentSelector = (state) => state.content.contents;
 export const getByIdContentSelector = (state, id) =>
   state.content.contents.filter((content) => content.id === id);
 
-export const { markRead } = conentSlice.actions;
+export const { markRead, contentAdded, contentDeleted, contentEdited } =
+  conentSlice.actions;
 export default conentSlice.reducer;
