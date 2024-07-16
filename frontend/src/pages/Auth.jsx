@@ -1,4 +1,5 @@
-import { TextField } from "@mui/material";
+import { CircularProgress, TextField } from "@mui/material";
+import axios from "axios";
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
@@ -14,20 +15,32 @@ const Auth = () => {
   const [formData, setFormData] = useState(initialFormState);
   // check login or sign up
   const [isLogin, changePage] = useState(true);
-
+  const [loading, setLoadinStatus] = useState(false);
   const handleChangeFormData = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    console.log(formData);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      setLoadinStatus(true);
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/auth",
+        formData
+      );
+      setLoadinStatus(false);
+      console.log(response);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
   return (
     <div className="grid grid-cols-2 h-screen">
       <img src="pro.svg" alt="Professional" className="h-screen" />
       <div className="flex-col space-y-20 mt-40">
-        {isLogin ? (
+        {loading ? (
+          <CircularProgress color="secondary" className="ml-60 mt-40" />
+        ) : isLogin ? (
           <>
             {" "}
             <div>
