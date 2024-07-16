@@ -6,7 +6,7 @@ const PrivateLayout = () => {
   const auth = false;
 
   if (!auth) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/auth" />;
   }
   return (
     <>

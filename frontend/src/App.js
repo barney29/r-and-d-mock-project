@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
 import PrivateLayout from "./component/layout/PrivateLayout";
 import PublicLayout from "./component/layout/PublicLayout";
+import Auth from "./pages/Auth";
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
         <Route path="/" element={<Home />} />
       </Route>
       <Route element={<PublicLayout />}>
-        <Route path="login" element={<Login />} />
+        <Route path="auth" element={<Auth />} />
       </Route>
     </Routes>
   );
